@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface ProductRepository : JpaRepository<Product, Int> {
+interface ProductRepository : JpaRepository<Product, Long> {
 
     override fun findAll(pageable: Pageable): Page<Product>
     fun findProductByName(name: String, pageable: Pageable): Page<Product>

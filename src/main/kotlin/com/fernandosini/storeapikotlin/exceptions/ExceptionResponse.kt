@@ -15,7 +15,7 @@ import java.time.ZonedDateTime
 class ExceptionResponse(
     private val timestamp: ZonedDateTime,
     private val message: String?,
-    private val details: String
+    private val details: String?
 ) : Serializable {
 
 

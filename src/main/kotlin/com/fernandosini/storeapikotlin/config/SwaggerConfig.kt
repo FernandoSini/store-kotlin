@@ -1,5 +1,6 @@
 package com.fernandosini.storeapikotlin.config
 
+import com.fernandosini.storeapikotlin.data.models.Product
 import com.fernandosini.storeapikotlin.data.models.User
 import io.swagger.v3.oas.annotations.OpenAPI31
 import io.swagger.v3.oas.annotations.OpenAPIDefinition
@@ -52,7 +53,7 @@ class SwaggerConfig {
                             lastname = "teste",
                             createdAt = ZonedDateTime.now(),
                             updatedAt = ZonedDateTime.now(),
-                            birthday = "01/02/2003"
+                            birthday = "01/02/2003",
                         )
                     )
                 )
@@ -66,7 +67,15 @@ class SwaggerConfig {
             .addProperty(
                 "result", ArraySchema().example(emptyArray<Any>())
             )
-        val cartSchemaResponse = ObjectSchema().name("CartEndpoint")
+        val productCreateSchemaResponse = ObjectSchema().name("ProductCreateEndpoint")
+            .title("ProductCreateEndpoint")
+            .description("product description")
+            .addProperty(
+                "result", ArraySchema().example(emptyArray<Any>())
+            )
+            .addProperty("message", StringSchema().example("Product created successfully!"))
+
+        val cartPaginationSchemaResponse = ObjectSchema().name("CartPaginationEndpoint")
             .title("CartEndpoint")
             .description("cart description")
             .addProperty("currentPage", StringSchema().example(0))
@@ -75,6 +84,27 @@ class SwaggerConfig {
             .addProperty(
                 "result", ArraySchema().example(emptyArray<Any>())
             )
+        val addToCartSchemaBody = ObjectSchema().name("AddToCartBody")
+            .title("AddToCartBody")
+            .description("cart description")
+            .addProperty("cartId", StringSchema().example(0))
+            .addProperty("userId", StringSchema().example(0))
+            .addProperty("productId", StringSchema().example(0))
+            .addProperty("quantity", StringSchema().example(0))
+            //.addProperty("product", ObjectSchema().example(emptyMap<String, Any>()))
+
+        val addToCartSchemaResponse = ObjectSchema().name("AddToCartEndpoint")
+            .title("AddToCartEndpoint")
+            .description("cart description")
+            .addProperty("message", StringSchema().example("Product added to cart!"))
+            .addProperty("result", ObjectSchema().example(emptyMap<String, Any>()))
+
+        val removeFromCartSchemaResponse = ObjectSchema().name("RemoveFromCartEndpoint")
+            .title("RemoveFromCartEndpoint")
+            .description("cart description")
+            .addProperty("message", StringSchema().example("Product removed from cart successfully!"))
+            .addProperty("result", ObjectSchema().example(emptyMap<String,Any>()))
+
 
         val orderSchemaResponse = ObjectSchema().name("OrderEndpoint")
             .title("OrderEndpoint")
@@ -83,6 +113,15 @@ class SwaggerConfig {
                 "result", ObjectSchema().example({})
             )
 
+        val orderPaginationSchemaResponse = ObjectSchema().name("OrderPaginationEndpoint")
+            .title("OrderEndpoint")
+            .description("Order description")
+            .addProperty("currentPage", StringSchema().example(0))
+            .addProperty("totalItems", StringSchema().example(4))
+            .addProperty("totalPages", StringSchema().example(10))
+            .addProperty(
+                "result", ArraySchema().example(emptyArray<Any>())
+            )
         val historySchemaResponse = ObjectSchema().name("HistoryEndpoint")
             .title("HistoryEndpoint")
             .description("History description")
@@ -92,7 +131,7 @@ class SwaggerConfig {
             .addProperty(
                 "result", ArraySchema().example(emptyArray<Any>())
             )
-        val userExample =  User(
+        val userExample = User(
             username = "teste",
             email = "teste@teste.com",
             id = 123,
@@ -108,26 +147,28 @@ class SwaggerConfig {
             .addProperty(
                 "result",
                 ObjectSchema()
-                    .addProperty("username",StringSchema().example(userExample.username))
-                    .addProperty("id",IntegerSchema().example(userExample.id))
-                    .addProperty("lastname",StringSchema().example(userExample.lastname))
-                    .addProperty("birthday",StringSchema().example(userExample.birthday))
-                    .addProperty("created_at",StringSchema().example(userExample.createdAt.toLocalDateTime()))
-                    .addProperty("updated_at",StringSchema().example(userExample.updatedAt.toLocalDateTime()))
+                    .addProperty("username", StringSchema().example(userExample.username))
+                    .addProperty("id", IntegerSchema().example(userExample.id))
+                    .addProperty("lastname", StringSchema().example(userExample.lastname))
+                    .addProperty("birthday", StringSchema().example(userExample.birthday))
+                    .addProperty("created_at", StringSchema().example(userExample.createdAt.toLocalDateTime()))
+                    .addProperty("updated_at", StringSchema().example(userExample.updatedAt?.toLocalDateTime()))
             )
-
-
-
 
         return OpenAPI().components(
             Components()
                 .addSchemas(loginSchema.name, loginSchema)
                 .addSchemas(registerSchemaResponse.name, registerSchemaResponse)
                 .addSchemas(productSchemaResponse.name, productSchemaResponse)
-                .addSchemas(cartSchemaResponse.name, cartSchemaResponse)
+                .addSchemas(cartPaginationSchemaResponse.name, cartPaginationSchemaResponse)
                 .addSchemas(orderSchemaResponse.name, orderSchemaResponse)
                 .addSchemas(historySchemaResponse.name, historySchemaResponse)
                 .addSchemas(userProfileSchemaResponse.name, userProfileSchemaResponse)
+                .addSchemas(productCreateSchemaResponse.name, productCreateSchemaResponse)
+                .addSchemas(addToCartSchemaResponse.name, addToCartSchemaResponse)
+                .addSchemas(removeFromCartSchemaResponse.name, removeFromCartSchemaResponse)
+                .addSchemas(addToCartSchemaBody.name, addToCartSchemaBody)
+                .addSchemas(orderPaginationSchemaResponse.name, orderPaginationSchemaResponse)
         )
 
     }

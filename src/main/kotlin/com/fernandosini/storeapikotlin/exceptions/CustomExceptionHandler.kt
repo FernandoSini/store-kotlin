@@ -23,8 +23,7 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
 
         return ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR)
     }
-
-
+    
     @ExceptionHandler(NotFoundException::class)
     fun handleNotFoundException(exception: Exception, webRequest: WebRequest): ResponseEntity<Any> {
         val exceptionResponse = ExceptionResponse(

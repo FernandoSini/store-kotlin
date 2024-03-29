@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody as SwaggerRequestBod
 
 @Controller
 @RequestMapping("/api")
-@Tag(name = "Authentication EndPoint")
+@Tag(name = "Authentication Endpoint")
 class AuthController(private val userServices: UserServices) {
 
 
@@ -31,7 +31,7 @@ class AuthController(private val userServices: UserServices) {
         responses = [ApiResponse(
             responseCode = "200",
             description = "Success",
-            content = arrayOf(Content(schema = Schema(implementation = User::class)))
+            content = arrayOf(Content(schema = Schema(implementation = User::class), mediaType = "application/json"))
         )]
     )
     fun login(
@@ -39,10 +39,11 @@ class AuthController(private val userServices: UserServices) {
             description = "",
             useParameterTypeSchema = false,
             content = [Content(
-                schema = Schema(ref = "#/components/schemas/LoginEndpoint")
+                schema = Schema(ref = "#/components/schemas/LoginEndpoint"), mediaType = "application/json"
             )]
         ) @RequestBody data: HashMap<String, Any>
     ) {
+
 
     }
 
@@ -52,7 +53,7 @@ class AuthController(private val userServices: UserServices) {
         responses = [ApiResponse(
             responseCode = "200",
             description = "Success",
-            content = arrayOf(Content(schema = Schema(ref = "#/components/schemas/RegisterEndpoint")))
+            content = arrayOf(Content(schema = Schema(ref = "#/components/schemas/RegisterEndpoint"), mediaType = "application/json"))
         )]
     )
     fun register(
@@ -60,10 +61,11 @@ class AuthController(private val userServices: UserServices) {
             description = "",
             useParameterTypeSchema = false,
             content = [Content(
-                schema = Schema(implementation = User::class)
+                schema = Schema(implementation = User::class), mediaType = "application/json"
             )]
         )
         @RequestBody data: HashMap<String, Any>
     ) {
+        System.getenv()
     }
 }

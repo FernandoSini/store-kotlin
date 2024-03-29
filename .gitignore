@@ -28,6 +28,11 @@ target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
+/.m2
+.DS_Store
+/data
+/conf-mysql.cnf
+/db
+.env
 ### VS Code ###
 .vscode/

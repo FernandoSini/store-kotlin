@@ -1,6 +1,7 @@
 package com.fernandosini.storeapikotlin.controllers
 
 import com.fernandosini.storeapikotlin.data.models.User
+import com.fernandosini.storeapikotlin.exceptions.InternalServerErrorException
 import com.fernandosini.storeapikotlin.services.UserServices
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -26,18 +27,19 @@ class UserController(private val userServices: UserServices) {
         responses = [ApiResponse(
             responseCode = "200",
             description = "Success",
-            content = arrayOf(Content(schema = Schema(ref = "#/components/schemas/UserProfileEndpoint")))
+            content = arrayOf(Content(schema = Schema(ref = "#/components/schemas/UserProfileEndpoint"), mediaType = "application/Json"))
         )]
 
     )
-    fun findUser(
-        @PathVariable("id") id: Long
-    ) {
-        val user = userServices.findUserById(id)
+    fun findUser(@PathVariable("id") id: Long) {
+        try {
+            val user = userServices.findUserById(id)
+            val response = HashMap<String, Any>()
+            response["result"] = user
+        } catch (e: Exception) {
+            throw InternalServerErrorException(e.message!!)
 
-
-        val response = HashMap<String, Any>()
-        response["result"] = user
+        }
 
     }
 }

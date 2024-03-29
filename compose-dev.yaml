@@ -1,0 +1,63 @@
+version: '3'
+volumes:
+  data:
+    driver: local
+
+networks:
+  mynetwork:
+      driver: bridge
+
+services:
+  mongodb:
+    container_name: "mongo-store-dev"
+    image: 'mongo:latest'
+    environment:
+      - 'MONGO_PORT=${MONGO_PORT}'
+      - 'MONGO_INITDB_DATABASE=mydatabase'
+      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
+      - 'MONGO_INITDB_ROOT_USERNAME=root'
+    ports:
+      - '${MONGO_PORT}:${MONGO_PORT}'
+  mysqldb:
+    container_name: "sql-store-dev"
+    image: 'mysql:latest'
+    volumes:
+      - data:/var/lib/mysql
+    networks:
+      - mynetwork
+    environment:
+      #- 'MYSQL_PORT=${MYSQL_PORT}'
+      - 'MYSQL_DATABASE=store_kotlin'
+      #- 'MYSQL_PASSWORD=fernando'
+      - 'MYSQL_ROOT_PASSWORD=root'
+      - 'MYSQL_USER_ROOT=root'
+    ports:
+      - '${MYSQL_PORT}:${MYSQL_PORT}'
+    restart: unless-stopped
+  redis:
+    container_name: "redis-dev"
+    image: 'redis:latest'
+    environment:
+      REDIS_PORT: ${REDIS_PORT}
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}'
+  api-server:
+    container_name: "api-store-container-dev"
+    build: ./  #aqui é o caminho do dockerfile
+    #image: ibmjava:jre-alpine
+    volumes:
+      - .m2:/root/.m2
+    networks:
+      - mynetwork
+    links:
+      - mysqldb
+    environment:
+      API_PORT: ${API_PORT}
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_DRIVER: com.mysql.cj.jdbc.Driver
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/store_kotlin?serverTimezone=UTC
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    restart: unless-stopped
+    depends_on:
+      - mysqldb
